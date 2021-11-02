@@ -7,7 +7,6 @@ import me.dinozoid.server.packet.Packet;
 import me.dinozoid.server.packet.PacketDeserializer;
 import me.dinozoid.server.packet.PacketEncoder;
 import me.dinozoid.server.packet.PacketHandler;
-import me.dinozoid.server.packet.implementations.AuthenticationSendPacket;
 import me.dinozoid.server.user.User;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -41,9 +40,7 @@ public class Server extends WebSocketServer {
         System.out.println(conn.getRemoteSocketAddress() + " has sent: " + message);
         Gson gson = new GsonBuilder().registerTypeAdapter(Packet.class, new PacketDeserializer<Packet>(packetHandler)).create();
         Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
-        if(packet instanceof AuthenticationSendPacket) {
-            System.out.println("chat packet xd");
-        }
+        packet.process(conn, packetHandler);
     }
 
     @Override

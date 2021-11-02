@@ -2,22 +2,23 @@ package me.dinozoid.server.packet.implementations;
 
 import me.dinozoid.server.packet.Packet;
 import me.dinozoid.server.packet.PacketHandler;
+import org.java_websocket.WebSocket;
 
-public class AuthenticationSendPacket extends Packet {
+public class SAuthenticationSentPacket extends Packet {
 
-    public AuthenticationSendPacket(String uid, String hwid) {
+    public SAuthenticationSentPacket(String uid, String hwid) {
         super(0);
         data.addProperty("uid", uid);
         data.addProperty("hwid", hwid);
     }
 
-    public AuthenticationSendPacket() {
+    public SAuthenticationSentPacket() {
         this(null, null);
     }
 
     @Override
-    public void process(PacketHandler packetHandler) {
-        packetHandler.processAuthenticationSendPacket(this);
+    public void process(WebSocket ws, PacketHandler packetHandler) {
+        packetHandler.processAuthenticationSendPacket(ws, this);
     }
 
     public String uid() {

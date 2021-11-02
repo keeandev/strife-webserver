@@ -18,7 +18,7 @@ public abstract class Packet {
         this.data = data;
     }
 
-    public abstract void process(PacketHandler packetHandler);
+    public abstract void process(WebSocket ws, PacketHandler packetHandler);
 
     public int id() {
         return id;
