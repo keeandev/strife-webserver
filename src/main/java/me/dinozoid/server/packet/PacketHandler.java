@@ -18,6 +18,7 @@ public class PacketHandler {
         PACKETS.put(CAuthenticationResponsePacket.class, 1);
         PACKETS.put(CChatPacket.class, 2);
         PACKETS.put(CBanStatisticPacket.class, 3);
+        PACKETS.put(SSendSoundPacket.class, 4);
     }
 
     public void processAuthenticationSendPacket(WebSocket ws, SAuthenticationSentPacket authenticationResponsePacket) {
