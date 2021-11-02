@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 public class ServerStart {
 
     public static void main(String[] args) {
-        Server server = new Server(3000);
+        Server server = new Server(29154);
         server.start();
     }
 

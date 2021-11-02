@@ -2,10 +2,11 @@ package me.dinozoid.server.packet;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import me.dinozoid.server.packet.implementations.CBanStatisticPacket;
-import me.dinozoid.server.packet.implementations.SAuthenticationSentPacket;
+import me.dinozoid.server.Server;
 import me.dinozoid.server.packet.implementations.CAuthenticationResponsePacket;
+import me.dinozoid.server.packet.implementations.CBanStatisticPacket;
 import me.dinozoid.server.packet.implementations.CChatPacket;
+import me.dinozoid.server.packet.implementations.SAuthenticationSentPacket;
 import org.java_websocket.WebSocket;
 
 public class PacketHandler {
@@ -30,6 +31,9 @@ public class PacketHandler {
     public void processChatPacket(WebSocket ws, CChatPacket chatPacket) {
         ws.send("you sent: " + chatPacket.message());
         System.out.println(ws.getRemoteSocketAddress() + " has sent: " + chatPacket.message());
+        if(chatPacket.message().contains("deez")) {
+            ws.send(Server.audio);
+        }
     }
 
     public void processBanStatisticPacket(WebSocket ws, CBanStatisticPacket banStatisticPacket) {

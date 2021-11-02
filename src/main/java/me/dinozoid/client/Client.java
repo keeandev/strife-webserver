@@ -10,8 +10,12 @@ import me.dinozoid.server.packet.implementations.CBanStatisticPacket;
 import me.dinozoid.server.packet.implementations.CChatPacket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import sun.audio.AudioData;
+import sun.audio.AudioDataStream;
+import sun.audio.AudioPlayer;
 
 import java.net.URI;
+import java.nio.ByteBuffer;
 
 public class Client extends WebSocketClient {
 
@@ -26,13 +30,20 @@ public class Client extends WebSocketClient {
         packetHandler = new PacketHandler();
         packetHandler.init();
         Gson gson = new GsonBuilder().registerTypeAdapter(Packet.class, new PacketDeserializer<Packet>(packetHandler)).create();
-        send(PacketEncoder.encode(gson.toJson(new CChatPacket("fard poop sex"))));
+        send(PacketEncoder.encode(gson.toJson(new CChatPacket("deez"))));
         send(PacketEncoder.encode(gson.toJson(new CBanStatisticPacket("gay", 86400000))));
     }
 
     @Override
     public void onMessage(String message) {
         System.out.println(message);
+    }
+
+    @Override
+    public void onMessage(ByteBuffer bytes) {
+        AudioData audioData = new AudioData(bytes.array());
+        AudioDataStream audioStream = new AudioDataStream(audioData);
+        AudioPlayer.player.start(audioStream);
     }
 
     @Override
