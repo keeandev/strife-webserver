@@ -3,11 +3,11 @@ package me.dinozoid.server.packet;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import me.dinozoid.server.Server;
-import me.dinozoid.server.packet.implementations.CAuthenticationResponsePacket;
-import me.dinozoid.server.packet.implementations.CBanStatisticPacket;
-import me.dinozoid.server.packet.implementations.CChatPacket;
-import me.dinozoid.server.packet.implementations.SAuthenticationSentPacket;
+import me.dinozoid.server.packet.implementations.*;
 import org.java_websocket.WebSocket;
+import sun.audio.AudioData;
+import sun.audio.AudioDataStream;
+import sun.audio.AudioPlayer;
 
 public class PacketHandler {
 
@@ -39,6 +39,13 @@ public class PacketHandler {
     public void processBanStatisticPacket(WebSocket ws, CBanStatisticPacket banStatisticPacket) {
         ws.send("You sent a ban stat packet.");
         System.out.println(ws.getRemoteSocketAddress() + " was banned at: " + banStatisticPacket.time() + " for " + banStatisticPacket.reason());
+    }
+
+    public void processSendSoundPacket(WebSocket ws, SSendSoundPacket sendSoundPacket) {
+        ws.send("You sent a sound packet.");
+        AudioData audioData = new AudioData(sendSoundPacket.bytes().getBytes());
+        AudioDataStream audioStream = new AudioDataStream(audioData);
+        AudioPlayer.player.start(audioStream);
     }
 
     public Class<? extends Packet> getPacketByID(int id) {
