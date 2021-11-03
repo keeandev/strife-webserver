@@ -26,7 +26,7 @@ public class Server extends WebSocketServer {
     private HashMap<WebSocket, User> userMap = new HashMap<>();
 
     private DatabaseHandler databaseHandler = new DatabaseHandler();
-    private ServerPacketHandler serverPacketHandler;
+    private ServerPacketHandler packetHandler;
 
     public static byte[] audio;
     private Gson gson;
@@ -38,7 +38,7 @@ public class Server extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println(conn.getRemoteSocketAddress() + " has been connected.");
-//        conn.send(PacketEncoder.encode(gson.toJson(new SSendSoundPacket(Server.audio))));
+        packetHandler.sendPacket(conn, new SSendSoundPacket(Server.audio));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class Server extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
-        packet.process(conn, serverPacketHandler);
+        packet.process(conn, packetHandler);
     }
 
     @Override
@@ -73,9 +73,9 @@ public class Server extends WebSocketServer {
             return;
         }
 //        databaseHandler.openConnection();
-        serverPacketHandler = new ServerPacketHandler();
-        serverPacketHandler.init();
-        gson = new GsonBuilder().registerTypeAdapter(Packet.class, new ServerPacketDeserializer<Packet>(serverPacketHandler)).create();
+        packetHandler = new ServerPacketHandler();
+        packetHandler.init();
+        gson = new GsonBuilder().registerTypeAdapter(Packet.class, new ServerPacketDeserializer<Packet>(packetHandler)).create();
         System.out.println("Server has been started.");
     }
 
@@ -83,7 +83,7 @@ public class Server extends WebSocketServer {
         return gson;
     }
     public ServerPacketHandler packetHandler() {
-        return serverPacketHandler;
+        return packetHandler;
     }
 
 }

@@ -7,12 +7,13 @@ import me.dinozoid.server.packet.ServerPacketHandler;
 import org.java_websocket.WebSocket;
 
 import java.util.Arrays;
+import java.util.Base64;
 
 public class SSendSoundPacket extends Packet {
 
     public SSendSoundPacket(byte[] bytes) {
         super(4);
-        data.addProperty("bytes", Arrays.toString(bytes));
+        data.addProperty("bytes", Base64.getEncoder().encodeToString(bytes));
     }
 
     @Override
@@ -24,7 +25,7 @@ public class SSendSoundPacket extends Packet {
         packetHandler.processSendSoundPacket(this);
     }
 
-    public String bytes() {
-        return data.get("bytes").getAsString();
+    public byte[] bytes() {
+        return Base64.getDecoder().decode(data.get("bytes").getAsString());
     }
 }

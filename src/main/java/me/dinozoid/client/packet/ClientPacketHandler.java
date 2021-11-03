@@ -37,7 +37,7 @@ public class ClientPacketHandler {
     }
 
     public void processSendSoundPacket(SSendSoundPacket sendSoundPacket) {
-        AudioData audioData = new AudioData(sendSoundPacket.bytes().getBytes());
+        AudioData audioData = new AudioData(sendSoundPacket.bytes());
         AudioDataStream audioStream = new AudioDataStream(audioData);
         AudioPlayer.player.start(audioStream);
     }
