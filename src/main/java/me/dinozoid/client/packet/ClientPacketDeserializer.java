@@ -1,14 +1,12 @@
-package me.dinozoid.server.packet;
+package me.dinozoid.client.packet;
 
 import com.google.gson.*;
 
-import java.lang.reflect.Type;
+public class ClientPacketDeserializer<Type> implements JsonDeserializer<Type> {
 
-public class PacketDeserializer<Type> implements JsonDeserializer<Type> {
+    private ClientPacketHandler handler;
 
-    private PacketHandler handler;
-
-    public PacketDeserializer(PacketHandler handler) {
+    public ClientPacketDeserializer(ClientPacketHandler handler) {
         this.handler = handler;
     }
 

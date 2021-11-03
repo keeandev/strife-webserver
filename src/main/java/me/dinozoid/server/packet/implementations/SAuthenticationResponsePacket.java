@@ -6,13 +6,15 @@ import me.dinozoid.server.packet.Packet;
 import me.dinozoid.server.packet.ServerPacketHandler;
 import org.java_websocket.WebSocket;
 
-import java.util.Arrays;
+public class SAuthenticationResponsePacket extends Packet {
 
-public class SSendSoundPacket extends Packet {
+    public SAuthenticationResponsePacket(boolean successful) {
+        super(1);
+        data.addProperty("successful", successful);
+    }
 
-    public SSendSoundPacket(byte[] bytes) {
-        super(4);
-        data.addProperty("bytes", Arrays.toString(bytes));
+    public SAuthenticationResponsePacket() {
+        this(false);
     }
 
     @Override
@@ -21,10 +23,10 @@ public class SSendSoundPacket extends Packet {
 
     @Override
     public void process(Client client, ClientPacketHandler packetHandler) {
-        packetHandler.processSendSoundPacket(this);
+        packetHandler.processAuthenticationResponsePacket(this);
     }
 
-    public String bytes() {
-        return data.get("bytes").getAsString();
+    public boolean successful() {
+        return data.get("successful").getAsBoolean();
     }
 }

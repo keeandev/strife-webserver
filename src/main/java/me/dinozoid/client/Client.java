@@ -2,12 +2,12 @@ package me.dinozoid.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.dinozoid.client.packet.ClientPacketDeserializer;
+import me.dinozoid.client.packet.ClientPacketHandler;
 import me.dinozoid.server.packet.Packet;
-import me.dinozoid.server.packet.PacketDeserializer;
 import me.dinozoid.server.packet.PacketEncoder;
-import me.dinozoid.server.packet.PacketHandler;
+import me.dinozoid.server.packet.ServerPacketDeserializer;
 import me.dinozoid.server.packet.implementations.CBanStatisticPacket;
-import me.dinozoid.server.packet.implementations.CChatPacket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import sun.audio.AudioData;
@@ -19,31 +19,26 @@ import java.nio.ByteBuffer;
 
 public class Client extends WebSocketClient {
 
-    private PacketHandler packetHandler;
+    private ClientPacketHandler packetHandler;
 
     public Client(URI serverUri) {
         super(serverUri);
     }
 
+    private Gson gson;
+
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        packetHandler = new PacketHandler();
+        packetHandler = new ClientPacketHandler();
         packetHandler.init();
-        Gson gson = new GsonBuilder().registerTypeAdapter(Packet.class, new PacketDeserializer<Packet>(packetHandler)).create();
-        send(PacketEncoder.encode(gson.toJson(new CChatPacket("deez"))));
-        send(PacketEncoder.encode(gson.toJson(new CBanStatisticPacket("gay", 86400000))));
+        gson = new GsonBuilder().registerTypeAdapter(Packet.class, new ClientPacketDeserializer<>(packetHandler)).create();
+        packetHandler.sendPacket(this, new CBanStatisticPacket("gay", 86400000));
     }
 
     @Override
     public void onMessage(String message) {
-        System.out.println(message);
-    }
-
-    @Override
-    public void onMessage(ByteBuffer bytes) {
-        AudioData audioData = new AudioData(bytes.array());
-        AudioDataStream audioStream = new AudioDataStream(audioData);
-        AudioPlayer.player.start(audioStream);
+        Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
+        packet.process(this, packetHandler);
     }
 
     @Override
@@ -56,4 +51,10 @@ public class Client extends WebSocketClient {
 
     }
 
+    public Gson gson() {
+        return gson;
+    }
+    public ClientPacketHandler packetHandler() {
+        return packetHandler;
+    }
 }

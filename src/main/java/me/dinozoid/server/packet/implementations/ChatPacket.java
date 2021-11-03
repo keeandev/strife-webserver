@@ -6,25 +6,25 @@ import me.dinozoid.server.packet.Packet;
 import me.dinozoid.server.packet.ServerPacketHandler;
 import org.java_websocket.WebSocket;
 
-import java.util.Arrays;
+public class ChatPacket extends Packet {
 
-public class SSendSoundPacket extends Packet {
-
-    public SSendSoundPacket(byte[] bytes) {
-        super(4);
-        data.addProperty("bytes", Arrays.toString(bytes));
+    public ChatPacket(String message) {
+        super(2);
+        data.addProperty("msg", message);
     }
 
     @Override
-    public void process(WebSocket ws, ServerPacketHandler packetHandler) {
+    public void process(WebSocket ws, ServerPacketHandler serverPacketHandler) {
+        serverPacketHandler.processChatPacket(ws, this);
     }
 
     @Override
     public void process(Client client, ClientPacketHandler packetHandler) {
-        packetHandler.processSendSoundPacket(this);
+        packetHandler.processChatPacket(this);
     }
 
-    public String bytes() {
-        return data.get("bytes").getAsString();
+    public String message() {
+        return data.get("msg").getAsString();
     }
+
 }

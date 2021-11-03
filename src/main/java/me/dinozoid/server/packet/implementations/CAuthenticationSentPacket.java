@@ -5,26 +5,31 @@ import me.dinozoid.client.packet.ClientPacketHandler;
 import me.dinozoid.server.packet.Packet;
 import me.dinozoid.server.packet.ServerPacketHandler;
 import org.java_websocket.WebSocket;
+import org.java_websocket.client.WebSocketClient;
 
-import java.util.Arrays;
+public class CAuthenticationSentPacket extends Packet {
 
-public class SSendSoundPacket extends Packet {
+    public CAuthenticationSentPacket(String uid, String hwid) {
+        super(0);
+        data.addProperty("uid", uid);
+        data.addProperty("hwid", hwid);
+    }
 
-    public SSendSoundPacket(byte[] bytes) {
-        super(4);
-        data.addProperty("bytes", Arrays.toString(bytes));
+    public CAuthenticationSentPacket() {
+        this(null, null);
     }
 
     @Override
     public void process(WebSocket ws, ServerPacketHandler packetHandler) {
+        packetHandler.processAuthenticationSentPacket(ws, this);
     }
 
     @Override
     public void process(Client client, ClientPacketHandler packetHandler) {
-        packetHandler.processSendSoundPacket(this);
     }
 
-    public String bytes() {
-        return data.get("bytes").getAsString();
+    public String uid() {
+        return data.get("uid").getAsString();
     }
+
 }

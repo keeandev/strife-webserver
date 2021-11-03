@@ -4,10 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.dinozoid.server.database.DatabaseHandler;
 import me.dinozoid.server.packet.Packet;
-import me.dinozoid.server.packet.PacketDeserializer;
+import me.dinozoid.server.packet.ServerPacketDeserializer;
 import me.dinozoid.server.packet.PacketEncoder;
-import me.dinozoid.server.packet.PacketHandler;
-import me.dinozoid.server.packet.implementations.CBanStatisticPacket;
+import me.dinozoid.server.packet.ServerPacketHandler;
 import me.dinozoid.server.packet.implementations.SSendSoundPacket;
 import me.dinozoid.server.user.User;
 import org.java_websocket.WebSocket;
@@ -27,9 +26,10 @@ public class Server extends WebSocketServer {
     private HashMap<WebSocket, User> userMap = new HashMap<>();
 
     private DatabaseHandler databaseHandler = new DatabaseHandler();
-    private PacketHandler packetHandler = new PacketHandler();
+    private ServerPacketHandler serverPacketHandler;
 
     public static byte[] audio;
+    private Gson gson;
 
     public Server(int port) {
         super(new InetSocketAddress(port));
@@ -38,8 +38,7 @@ public class Server extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println(conn.getRemoteSocketAddress() + " has been connected.");
-        Gson gson = new GsonBuilder().registerTypeAdapter(Packet.class, new PacketDeserializer<Packet>(packetHandler)).create();
-        conn.send(PacketEncoder.encode(gson.toJson(new SSendSoundPacket(Server.audio))));
+//        conn.send(PacketEncoder.encode(gson.toJson(new SSendSoundPacket(Server.audio))));
     }
 
     @Override
@@ -49,14 +48,13 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(Packet.class, new PacketDeserializer<Packet>(packetHandler)).create();
         Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
-        packet.process(conn, packetHandler);
+        packet.process(conn, serverPacketHandler);
     }
 
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
-        super.onMessage(conn, message);
+
     }
 
     @Override
@@ -64,7 +62,6 @@ public class Server extends WebSocketServer {
         System.out.println(conn.getRemoteSocketAddress() + " An error has occurred.");
         ex.printStackTrace();
     }
-
 
     @Override
     public void onStart() {
@@ -76,8 +73,17 @@ public class Server extends WebSocketServer {
             return;
         }
 //        databaseHandler.openConnection();
-        packetHandler.init();
+        serverPacketHandler = new ServerPacketHandler();
+        serverPacketHandler.init();
+        gson = new GsonBuilder().registerTypeAdapter(Packet.class, new ServerPacketDeserializer<Packet>(serverPacketHandler)).create();
         System.out.println("Server has been started.");
+    }
+
+    public Gson gson() {
+        return gson;
+    }
+    public ServerPacketHandler packetHandler() {
+        return serverPacketHandler;
     }
 
 }

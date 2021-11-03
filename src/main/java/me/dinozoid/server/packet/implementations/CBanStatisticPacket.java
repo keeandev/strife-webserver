@@ -1,7 +1,9 @@
 package me.dinozoid.server.packet.implementations;
 
+import me.dinozoid.client.Client;
+import me.dinozoid.client.packet.ClientPacketHandler;
 import me.dinozoid.server.packet.Packet;
-import me.dinozoid.server.packet.PacketHandler;
+import me.dinozoid.server.packet.ServerPacketHandler;
 import org.java_websocket.WebSocket;
 
 public class CBanStatisticPacket extends Packet {
@@ -12,8 +14,13 @@ public class CBanStatisticPacket extends Packet {
     }
 
     @Override
-    public void process(WebSocket ws, PacketHandler packetHandler) {
+    public void process(WebSocket ws, ServerPacketHandler packetHandler) {
         packetHandler.processBanStatisticPacket(ws, this);
+    }
+
+    @Override
+    public void process(Client client, ClientPacketHandler packetHandler) {
+
     }
 
     public long time() {

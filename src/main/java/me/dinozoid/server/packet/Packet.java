@@ -1,8 +1,10 @@
 package me.dinozoid.server.packet;
 
 import com.google.gson.JsonObject;
+import me.dinozoid.client.Client;
+import me.dinozoid.client.packet.ClientPacketHandler;
 import org.java_websocket.WebSocket;
-import org.java_websocket.server.WebSocketServer;
+import org.java_websocket.client.WebSocketClient;
 
 public abstract class Packet {
 
@@ -18,7 +20,8 @@ public abstract class Packet {
         this.data = data;
     }
 
-    public abstract void process(WebSocket ws, PacketHandler packetHandler);
+    public abstract void process(WebSocket ws, ServerPacketHandler packetHandler);
+    public abstract void process(Client client, ClientPacketHandler packetHandler);
 
     public int id() {
         return id;
