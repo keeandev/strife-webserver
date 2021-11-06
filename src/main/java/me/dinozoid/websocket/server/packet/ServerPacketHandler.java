@@ -4,10 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import me.dinozoid.websocket.server.Server;
 import me.dinozoid.websocket.server.ServerStart;
-import me.dinozoid.websocket.server.packet.implementations.CBanStatisticPacket;
-import me.dinozoid.websocket.server.packet.implementations.CChatPacket;
-import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
-import me.dinozoid.websocket.server.packet.implementations.SSoundPacket;
+import me.dinozoid.websocket.server.packet.implementations.*;
 import me.dinozoid.websocket.server.user.User;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -30,9 +27,11 @@ public class ServerPacketHandler {
         PACKETS.put(CChatPacket.class, 1);
         PACKETS.put(CBanStatisticPacket.class, 2);
         PACKETS.put(SSoundPacket.class, 3);
+        PACKETS.put(SVLAbusePacket.class, 4);
     }
 
     public void sendPacket(User user, Packet packet) {
+        System.out.println(user.socket() == null);
         user.socket().send(PacketEncoder.encode(server.gson().toJson(packet)));
     }
 

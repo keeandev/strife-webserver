@@ -14,7 +14,7 @@ public class User {
     }
 
     public WebSocket socket() {
-        return ServerStart.server().userHandler().userByUsername(username).socket();
+        return ServerStart.server().userHandler().socket(this);
     }
     public String username() {
         return username;

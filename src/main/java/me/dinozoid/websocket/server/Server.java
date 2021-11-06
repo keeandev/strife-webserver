@@ -29,9 +29,9 @@ import java.util.HashMap;
 
 public class Server extends WebSocketServer {
 
+    private ServerPacketHandler packetHandler = new ServerPacketHandler(this);
     private DatabaseHandler databaseHandler = new DatabaseHandler();
     private UserHandler userHandler = new UserHandler();
-    private ServerPacketHandler packetHandler;
 
     public static byte[] audio;
     public User serverUser;
@@ -47,9 +47,9 @@ public class Server extends WebSocketServer {
         if(userHandler.userMap().containsKey(conn)) {
             throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
         }
-        if(request.getResourceDescriptor().length() > 100) {
-            throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
-        }
+//        if(request.getResourceDescriptor().length() > 100) {
+//            throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
+//        }
         if(!request.getResourceDescriptor().startsWith("/?uid=") && !request.getResourceDescriptor().contains("&hwid=")) {
             throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
         }
@@ -82,10 +82,8 @@ public class Server extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         User user = userHandler.userBySocket(conn);
-        if(user != null) {
-            Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
-            packet.process(user, packetHandler);
-        }
+        Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
+        packet.process(user, packetHandler);
     }
 
     @Override
@@ -105,7 +103,6 @@ public class Server extends WebSocketServer {
         }
         userHandler.addUser(null, serverUser = new User("Server", "-9999", "Developer"));
         databaseHandler.openConnection();
-        packetHandler = new ServerPacketHandler(this);
         packetHandler.init();
         gson = new GsonBuilder().registerTypeAdapter(Packet.class, new ServerPacketDeserializer<Packet>(packetHandler)).create();
         System.out.println("Server has been started.");

@@ -15,7 +15,6 @@ public class SChatPacket extends Packet {
         super(0);
         data.addProperty("user", ServerStart.server().gson().toJson(user));
         data.addProperty("msg", message);
-        System.out.println(data);
     }
 
 

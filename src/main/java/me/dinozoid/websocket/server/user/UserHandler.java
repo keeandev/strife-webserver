@@ -29,6 +29,10 @@ public class UserHandler {
         return userMap.get(socket);
     }
 
+    public WebSocket socket(User user) {
+        return userMap.inverse().get(user);
+    }
+
     public BiMap<WebSocket, User> userMap() {
         return userMap;
     }
