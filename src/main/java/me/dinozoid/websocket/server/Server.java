@@ -10,6 +10,7 @@ import me.dinozoid.websocket.server.packet.ServerPacketHandler;
 import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
 import me.dinozoid.websocket.server.packet.implementations.SSoundPacket;
 import me.dinozoid.websocket.server.user.User;
+import me.dinozoid.websocket.server.user.UserHandler;
 import org.bson.Document;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -28,9 +29,8 @@ import java.util.HashMap;
 
 public class Server extends WebSocketServer {
 
-    private HashMap<WebSocket, User> userMap = new HashMap<>();
-
     private DatabaseHandler databaseHandler = new DatabaseHandler();
+    private UserHandler userHandler = new UserHandler();
     private ServerPacketHandler packetHandler;
 
     public static byte[] audio;
@@ -44,7 +44,7 @@ public class Server extends WebSocketServer {
     @Override
     public ServerHandshakeBuilder onWebsocketHandshakeReceivedAsServer(WebSocket conn, Draft draft, ClientHandshake request) throws InvalidDataException {
         ServerHandshakeBuilder builder = super.onWebsocketHandshakeReceivedAsServer(conn, draft, request);
-        if(userMap.containsKey(conn)) {
+        if(userHandler.userMap().containsKey(conn)) {
             throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
         }
         if(request.getResourceDescriptor().length() > 100) {
@@ -60,27 +60,32 @@ public class Server extends WebSocketServer {
         if(!document.getString("hwid").equals(hwid)) {
             throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
         }
-        userMap.put(conn, new User(document.getString("username"), uid, document.getString("rank")));
+        userHandler.addUser(conn, new User(document.getString("username"), uid, document.getString("rank")));
         return builder;
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        System.out.println(userMap.get(conn).username() + " has been connected.");
-        packetHandler.sendPacket(conn, new SChatPacket(serverUser.username(), "Welcome, " + userMap.get(conn).username() + "!"));
-        packetHandler.sendPacket(conn, new SSoundPacket(Server.audio));
+        User user = userHandler.userBySocket(conn);
+        System.out.println(user.username() + " has been connected.");
+        packetHandler.sendPacket(user, new SChatPacket(serverUser, "Welcome, " + user.username() + "!"));
+        packetHandler.sendPacket(user, new SSoundPacket(Server.audio));
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        System.out.println(userMap.get(conn).username() + " has been disconnected. (" + reason + ")");
-        userMap.remove(conn);
+        User user = userHandler.userBySocket(conn);
+        System.out.println(user.username() + " has been disconnected. (" + reason + ")");
+        userHandler.removeUser(conn);
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
-        packet.process(conn, packetHandler);
+        User user = userHandler.userBySocket(conn);
+        if(user != null) {
+            Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
+            packet.process(user, packetHandler);
+        }
     }
 
     @Override
@@ -98,9 +103,9 @@ public class Server extends WebSocketServer {
             e.printStackTrace();
             return;
         }
-        userMap.put(null, serverUser = new User("Server", "-9999", "Developer"));
+        userHandler.addUser(null, serverUser = new User("Server", "-9999", "Developer"));
         databaseHandler.openConnection();
-        packetHandler = new ServerPacketHandler();
+        packetHandler = new ServerPacketHandler(this);
         packetHandler.init();
         gson = new GsonBuilder().registerTypeAdapter(Packet.class, new ServerPacketDeserializer<Packet>(packetHandler)).create();
         System.out.println("Server has been started.");
@@ -112,5 +117,7 @@ public class Server extends WebSocketServer {
     public ServerPacketHandler packetHandler() {
         return packetHandler;
     }
-
+    public UserHandler userHandler() {
+        return userHandler;
+    }
 }

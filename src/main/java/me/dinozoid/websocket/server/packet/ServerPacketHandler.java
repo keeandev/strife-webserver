@@ -2,8 +2,12 @@ package me.dinozoid.websocket.server.packet;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import me.dinozoid.websocket.server.Server;
 import me.dinozoid.websocket.server.ServerStart;
-import me.dinozoid.websocket.server.packet.implementations.*;
+import me.dinozoid.websocket.server.packet.implementations.CBanStatisticPacket;
+import me.dinozoid.websocket.server.packet.implementations.CChatPacket;
+import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
+import me.dinozoid.websocket.server.packet.implementations.SSoundPacket;
 import me.dinozoid.websocket.server.user.User;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -15,6 +19,12 @@ public class ServerPacketHandler {
 
     private static BiMap<Class<? extends Packet>, Integer> PACKETS = HashBiMap.create();
 
+    private Server server;
+
+    public ServerPacketHandler(Server server) {
+        this.server = server;
+    }
+
     public void init() {
         PACKETS.put(SChatPacket.class, 0);
         PACKETS.put(CChatPacket.class, 1);
@@ -22,31 +32,30 @@ public class ServerPacketHandler {
         PACKETS.put(SSoundPacket.class, 3);
     }
 
-    public void sendPacket(WebSocket ws, Packet packet) {
-        ws.send(PacketEncoder.encode(ServerStart.server().gson().toJson(packet)));
+    public void sendPacket(User user, Packet packet) {
+        user.socket().send(PacketEncoder.encode(server.gson().toJson(packet)));
     }
 
     public void sendPacket(WebSocketClient client, Packet packet) {
-        client.send(PacketEncoder.encode(ServerStart.server().gson().toJson(packet)));
+        client.send(PacketEncoder.encode(server.gson().toJson(packet)));
     }
 
-    public void broadcastPacketToAllExcept(Packet packet, WebSocket user) {
-        List<WebSocket> clients = new ArrayList<>(ServerStart.server().getConnections());
-        clients.remove(user);
-        ServerStart.server().broadcast(PacketEncoder.encode(ServerStart.server().gson().toJson(packet)), clients);
+    public void broadcastPacketToAllExcept(Packet packet, User user) {
+        List<WebSocket> clients = new ArrayList<>(server.getConnections());
+        clients.remove(user.socket());
+        server.broadcast(PacketEncoder.encode(server.gson().toJson(packet)), clients);
     }
 
     public void broadcastPacket(Packet packet) {
-        ServerStart.server().broadcast(PacketEncoder.encode(ServerStart.server().gson().toJson(packet)));
+        server.broadcast(PacketEncoder.encode(server.gson().toJson(packet)));
     }
 
     public void processChatPacket(User user, CChatPacket chatPacket) {
-        System.out.println(user.username()  + " said: " + chatPacket.message());
-        ServerStart.server().packetHandler().broadcastPacket(new SChatPacket(user, chatPacket.message()));
+        server.packetHandler().broadcastPacket(new SChatPacket(user, chatPacket.message()));
     }
 
-    public void processBanStatisticPacket(WebSocket ws, CBanStatisticPacket banStatisticPacket) {
-        System.out.println(ws.getRemoteSocketAddress() + " was banned at: " + banStatisticPacket.time() + " for " + banStatisticPacket.reason());
+    public void processBanStatisticPacket(User user, CBanStatisticPacket banStatisticPacket) {
+        System.out.println(user.username() + " was banned at: " + banStatisticPacket.time() + " for " + banStatisticPacket.reason());
     }
 
     public Class<? extends Packet> getPacketByID(int id) {

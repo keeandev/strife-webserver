@@ -27,7 +27,7 @@ public class ClientPacketHandler {
     }
 
     public void processChatPacket(SChatPacket chatPacket) {
-        System.out.println("[" + chatPacket.username() + "] " + chatPacket.message());
+        System.out.println("[" + chatPacket.user().username() + "] " + chatPacket.message());
     }
 
     public void processVLAbusePacket(SVLAbusePacket abusePacket) {
