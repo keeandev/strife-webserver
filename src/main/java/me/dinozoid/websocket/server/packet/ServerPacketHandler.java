@@ -28,10 +28,10 @@ public class ServerPacketHandler {
         PACKETS.put(CBanStatisticPacket.class, 2);
         PACKETS.put(SSoundPacket.class, 3);
         PACKETS.put(SVLAbusePacket.class, 4);
+        PACKETS.put(STitlePacket.class, 5);
     }
 
     public void sendPacket(User user, Packet packet) {
-        System.out.println(user.socket() == null);
         user.socket().send(PacketEncoder.encode(server.gson().toJson(packet)));
     }
 

@@ -20,6 +20,7 @@ public class ClientPacketHandler {
         PACKETS.put(CBanStatisticPacket.class, 2);
         PACKETS.put(SSoundPacket.class, 3);
         PACKETS.put(SVLAbusePacket.class, 4);
+        PACKETS.put(STitlePacket.class, 5);
     }
 
     public void sendPacket(Client client, Packet packet) {
@@ -32,6 +33,10 @@ public class ClientPacketHandler {
 
     public void processVLAbusePacket(SVLAbusePacket abusePacket) {
         // TODO: set y val :)
+    }
+
+    public void processTitlePacket(STitlePacket titlePacket) {
+        // TODO: process title
     }
 
     public void processSendSoundPacket(SSoundPacket sendSoundPacket) {

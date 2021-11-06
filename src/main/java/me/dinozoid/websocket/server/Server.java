@@ -47,9 +47,9 @@ public class Server extends WebSocketServer {
         if(userHandler.userMap().containsKey(conn)) {
             throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
         }
-//        if(request.getResourceDescriptor().length() > 100) {
-//            throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
-//        }
+        if(request.getResourceDescriptor().length() > 100) {
+            throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
+        }
         if(!request.getResourceDescriptor().startsWith("/?uid=") && !request.getResourceDescriptor().contains("&hwid=")) {
             throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
         }

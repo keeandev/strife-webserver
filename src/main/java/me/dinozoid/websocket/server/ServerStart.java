@@ -1,6 +1,7 @@
 package me.dinozoid.websocket.server;
 
 import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
+import me.dinozoid.websocket.server.packet.implementations.STitlePacket;
 
 import java.util.Scanner;
 
@@ -13,8 +14,12 @@ public class ServerStart {
         server.start();
         Scanner scanner = new Scanner(System.in);
         while(true) {
-            if(scanner.hasNext())
-                server().packetHandler().broadcastPacket(new SChatPacket(server.serverUser, scanner.next()));
+            if(scanner.hasNext()) {
+                String next = scanner.next();
+                if(next.equals("title"))
+                    server().packetHandler().broadcastPacket(new STitlePacket("\u00A7cStrife", "\u00A77moment"));
+                server().packetHandler().broadcastPacket(new SChatPacket(server.serverUser, next));
+            }
         }
     }
 
