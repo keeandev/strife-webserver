@@ -18,13 +18,14 @@ public class SChatPacket extends Packet {
         System.out.println(data);
     }
 
+
     @Override
-    public void process(WebSocket ws, ServerPacketHandler packetHandler) {
+    public void process(User user, ServerPacketHandler packetHandler) {
 
     }
 
     @Override
-    public void process(Client client, ClientPacketHandler packetHandler) {
+    public void process(ClientPacketHandler packetHandler) {
         packetHandler.processChatPacket(this);
     }
 

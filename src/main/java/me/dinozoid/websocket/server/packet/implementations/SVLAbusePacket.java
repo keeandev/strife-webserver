@@ -4,6 +4,7 @@ import me.dinozoid.websocket.client.Client;
 import me.dinozoid.websocket.client.packet.ClientPacketHandler;
 import me.dinozoid.websocket.server.packet.Packet;
 import me.dinozoid.websocket.server.packet.ServerPacketHandler;
+import me.dinozoid.websocket.server.user.User;
 import org.java_websocket.WebSocket;
 
 public class SVLAbusePacket extends Packet {
@@ -14,12 +15,12 @@ public class SVLAbusePacket extends Packet {
     }
 
     @Override
-    public void process(WebSocket ws, ServerPacketHandler packetHandler) {
+    public void process(User user, ServerPacketHandler packetHandler) {
 
     }
 
     @Override
-    public void process(Client client, ClientPacketHandler packetHandler) {
+    public void process(ClientPacketHandler packetHandler) {
         packetHandler.processVLAbusePacket(this);
     }
 

@@ -33,7 +33,7 @@ public class Client extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
-        packet.process(this, packetHandler);
+        packet.process(packetHandler);
     }
 
     @Override
