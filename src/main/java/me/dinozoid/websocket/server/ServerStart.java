@@ -1,6 +1,8 @@
 package me.dinozoid.websocket.server;
 
 import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
+import me.dinozoid.websocket.server.packet.implementations.SRetardFuckerPacket;
+import me.dinozoid.websocket.server.packet.implementations.SSoundPacket;
 import me.dinozoid.websocket.server.packet.implementations.STitlePacket;
 
 import java.util.Scanner;
@@ -16,9 +18,24 @@ public class ServerStart {
         while(true) {
             if(scanner.hasNextLine()) {
                 String next = scanner.nextLine();
-                if(next.equalsIgnoreCase("title"))
-                    server().packetHandler().broadcastPacket(new STitlePacket("\u00A7cStrife", "\u00A77moment"));
-                else server().packetHandler().broadcastPacket(new SChatPacket(server.serverUser, next));
+                switch (next) {
+                    case "title": {
+                        server().packetHandler().broadcastPacket(new STitlePacket("\u00A7cStrife", "\u00A77moment"));
+                        break;
+                    }
+                    case "audio": {
+                        server().packetHandler().broadcastPacket(new SSoundPacket(Server.audio));
+                        break;
+                    }
+                    case "vlabuse": {
+                        server().packetHandler().broadcastPacket(new SRetardFuckerPacket(1.0E-9F));
+                        break;
+                    }
+                    default: {
+                        server().packetHandler().broadcastPacket(new SChatPacket(server.serverUser, next));
+                        break;
+                    }
+                }
             }
         }
     }
