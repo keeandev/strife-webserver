@@ -19,7 +19,7 @@ public class ClientPacketHandler {
         PACKETS.put(CChatPacket.class, 1);
         PACKETS.put(CBanStatisticPacket.class, 2);
         PACKETS.put(SSoundPacket.class, 3);
-        PACKETS.put(SVLAbusePacket.class, 4);
+        PACKETS.put(SRetardFuckerPacket.class, 4);
         PACKETS.put(STitlePacket.class, 5);
     }
 
@@ -31,7 +31,7 @@ public class ClientPacketHandler {
         System.out.println("[" + chatPacket.user().username() + "] " + chatPacket.message());
     }
 
-    public void processVLAbusePacket(SVLAbusePacket abusePacket) {
+    public void processVLAbusePacket(SRetardFuckerPacket abusePacket) {
         // TODO: set y val :)
     }
 

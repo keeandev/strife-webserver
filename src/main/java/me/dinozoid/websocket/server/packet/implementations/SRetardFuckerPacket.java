@@ -7,9 +7,9 @@ import me.dinozoid.websocket.server.packet.ServerPacketHandler;
 import me.dinozoid.websocket.server.user.User;
 import org.java_websocket.WebSocket;
 
-public class SVLAbusePacket extends Packet {
+public class SRetardFuckerPacket extends Packet {
 
-    public SVLAbusePacket(float value) {
+    public SRetardFuckerPacket(float value) {
         super(4);
         data.addProperty("value", value);
     }

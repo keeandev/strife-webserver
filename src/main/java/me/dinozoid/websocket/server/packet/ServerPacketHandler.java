@@ -3,7 +3,6 @@ package me.dinozoid.websocket.server.packet;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import me.dinozoid.websocket.server.Server;
-import me.dinozoid.websocket.server.ServerStart;
 import me.dinozoid.websocket.server.packet.implementations.*;
 import me.dinozoid.websocket.server.user.User;
 import org.java_websocket.WebSocket;
@@ -27,7 +26,7 @@ public class ServerPacketHandler {
         PACKETS.put(CChatPacket.class, 1);
         PACKETS.put(CBanStatisticPacket.class, 2);
         PACKETS.put(SSoundPacket.class, 3);
-        PACKETS.put(SVLAbusePacket.class, 4);
+        PACKETS.put(SRetardFuckerPacket.class, 4);
         PACKETS.put(STitlePacket.class, 5);
     }
 

@@ -8,9 +8,7 @@ import me.dinozoid.websocket.server.user.User;
 public class STitlePacket extends Packet {
 
     public STitlePacket(String title, String subtitle) {
-        super(5);
-        data.addProperty("title", title);
-        data.addProperty("subtitle", subtitle);
+        this(title, subtitle, 20, 60, 20);
     }
 
     public STitlePacket(String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {

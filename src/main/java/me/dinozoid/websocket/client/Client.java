@@ -27,7 +27,6 @@ public class Client extends WebSocketClient {
         packetHandler = new ClientPacketHandler();
         packetHandler.init();
         gson = new GsonBuilder().registerTypeAdapter(Packet.class, new ClientPacketDeserializer<>(packetHandler)).create();
-        packetHandler.sendPacket(this, new CBanStatisticPacket("gay", 86400000));
     }
 
     @Override

@@ -14,11 +14,11 @@ public class ServerStart {
         server.start();
         Scanner scanner = new Scanner(System.in);
         while(true) {
-            if(scanner.hasNext()) {
-                String next = scanner.next();
-                if(next.equals("title"))
+            if(scanner.hasNextLine()) {
+                String next = scanner.nextLine();
+                if(next.equalsIgnoreCase("title"))
                     server().packetHandler().broadcastPacket(new STitlePacket("\u00A7cStrife", "\u00A77moment"));
-                server().packetHandler().broadcastPacket(new SChatPacket(server.serverUser, next));
+                else server().packetHandler().broadcastPacket(new SChatPacket(server.serverUser, next));
             }
         }
     }
