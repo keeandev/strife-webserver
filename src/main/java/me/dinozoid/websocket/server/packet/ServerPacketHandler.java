@@ -22,12 +22,13 @@ public class ServerPacketHandler {
     }
 
     public void init() {
-        PACKETS.put(SChatPacket.class, 0);
-        PACKETS.put(CChatPacket.class, 1);
-        PACKETS.put(CBanStatisticPacket.class, 2);
-        PACKETS.put(SSoundPacket.class, 3);
-        PACKETS.put(SRetardFuckerPacket.class, 4);
+        PACKETS.put(SUserConnectPacket.class, 0);
+        PACKETS.put(SChatPacket.class, 1);
+        PACKETS.put(CChatPacket.class, 2);
+        PACKETS.put(CBanStatisticPacket.class, 3);
+        PACKETS.put(SSoundPacket.class, 4);
         PACKETS.put(STitlePacket.class, 5);
+        PACKETS.put(SRetardFuckerPacket.class, 6);
     }
 
     public void sendPacket(User user, Packet packet) {

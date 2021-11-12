@@ -12,7 +12,7 @@ import org.java_websocket.WebSocket;
 public class SChatPacket extends Packet {
 
     public SChatPacket(User user, String message) {
-        super(0);
+        super(ServerStart.server().packetHandler().getIDForPacket(SChatPacket.class));
         data.addProperty("user", ServerStart.server().gson().toJson(user));
         data.addProperty("msg", message);
     }

@@ -9,6 +9,7 @@ import me.dinozoid.websocket.server.packet.PacketEncoder;
 import me.dinozoid.websocket.server.packet.ServerPacketHandler;
 import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
 import me.dinozoid.websocket.server.packet.implementations.SSoundPacket;
+import me.dinozoid.websocket.server.packet.implementations.SUserConnectPacket;
 import me.dinozoid.websocket.server.user.User;
 import me.dinozoid.websocket.server.user.UserHandler;
 import org.bson.Document;
@@ -60,7 +61,8 @@ public class Server extends WebSocketServer {
         if(!document.getString("hwid").equals(hwid)) {
             throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
         }
-        userHandler.addUser(conn, new User(document.getString("username"), uid, document.getString("rank")));
+        User user;
+        userHandler.addUser(conn, user = new User(document.getString("username"), uid, document.getString("rank")));
         return builder;
     }
 
@@ -68,6 +70,7 @@ public class Server extends WebSocketServer {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         User user = userHandler.userBySocket(conn);
         System.out.println(user.username() + " has been connected.");
+        packetHandler.sendPacket(user, new SUserConnectPacket(user));
         packetHandler.sendPacket(user, new SChatPacket(serverUser, "Welcome, " + user.username() + "!"));
         packetHandler.sendPacket(user, new SSoundPacket(Server.audio));
     }
@@ -83,7 +86,9 @@ public class Server extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         User user = userHandler.userBySocket(conn);
         Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
-        packet.process(user, packetHandler);
+        if(packet != null) {
+            packet.process(user, packetHandler);
+        }
     }
 
     @Override

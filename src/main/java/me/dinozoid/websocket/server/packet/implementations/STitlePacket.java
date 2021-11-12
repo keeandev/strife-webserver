@@ -1,6 +1,7 @@
 package me.dinozoid.websocket.server.packet.implementations;
 
 import me.dinozoid.websocket.client.packet.ClientPacketHandler;
+import me.dinozoid.websocket.server.ServerStart;
 import me.dinozoid.websocket.server.packet.Packet;
 import me.dinozoid.websocket.server.packet.ServerPacketHandler;
 import me.dinozoid.websocket.server.user.User;
@@ -12,7 +13,7 @@ public class STitlePacket extends Packet {
     }
 
     public STitlePacket(String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
-        super(5);
+        super(ServerStart.server().packetHandler().getIDForPacket(STitlePacket.class));
         data.addProperty("title", title);
         data.addProperty("subtitle", subtitle);
         data.addProperty("fade", fadeInTicks);

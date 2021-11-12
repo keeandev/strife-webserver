@@ -1,32 +1,30 @@
 package me.dinozoid.websocket.server.packet.implementations;
 
-import me.dinozoid.websocket.client.Client;
 import me.dinozoid.websocket.client.packet.ClientPacketHandler;
 import me.dinozoid.websocket.server.ServerStart;
 import me.dinozoid.websocket.server.packet.Packet;
 import me.dinozoid.websocket.server.packet.ServerPacketHandler;
 import me.dinozoid.websocket.server.user.User;
-import org.java_websocket.WebSocket;
 
-import java.util.Base64;
+public class SUserConnectPacket extends Packet {
 
-public class SSoundPacket extends Packet {
-
-    public SSoundPacket(byte[] bytes) {
-        super(ServerStart.server().packetHandler().getIDForPacket(SSoundPacket.class));
-        data.addProperty("bytes", Base64.getEncoder().encodeToString(bytes));
+    public SUserConnectPacket(User user) {
+        super(ServerStart.server().packetHandler().getIDForPacket(SUserConnectPacket.class));
+        data.addProperty("user", ServerStart.server().gson().toJson(user));
     }
 
     @Override
     public void process(User user, ServerPacketHandler packetHandler) {
+
     }
 
     @Override
     public void process(ClientPacketHandler packetHandler) {
-        packetHandler.processSendSoundPacket(this);
+        packetHandler.processUserConnectPacket(this);
     }
 
-    public byte[] bytes() {
-        return Base64.getDecoder().decode(data.get("bytes").getAsString());
+    public User user() {
+        return ServerStart.server().gson().fromJson(data.get("user").getAsString(), User.class);
     }
+
 }

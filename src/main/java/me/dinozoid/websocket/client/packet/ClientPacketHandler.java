@@ -39,6 +39,10 @@ public class ClientPacketHandler {
         // TODO: process title
     }
 
+    public void processUserConnectPacket(SUserConnectPacket userConnectPacket) {
+
+    }
+
     public void processSendSoundPacket(SSoundPacket sendSoundPacket) {
         AudioData audioData = new AudioData(sendSoundPacket.bytes());
         AudioDataStream audioStream = new AudioDataStream(audioData);
