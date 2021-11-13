@@ -34,7 +34,6 @@ public class Server extends WebSocketServer {
     private DatabaseHandler databaseHandler = new DatabaseHandler();
     private UserHandler userHandler = new UserHandler();
 
-    public static byte[] audio;
     public User serverUser;
     private Gson gson;
 
@@ -72,7 +71,6 @@ public class Server extends WebSocketServer {
         System.out.println(user.username() + " has been connected.");
         packetHandler.sendPacket(user, new SUserConnectPacket(user));
         packetHandler.sendPacket(user, new SChatPacket(serverUser, "Welcome, " + user.username() + "!"));
-        packetHandler.sendPacket(user, new SSoundPacket(Server.audio));
     }
 
     @Override
@@ -99,13 +97,6 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onStart() {
-        Path path = Paths.get("src/main/resources/deez.wav");
-        try {
-            audio = Files.readAllBytes(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
         userHandler.addUser(null, serverUser = new User("Server", "-9999", "Developer"));
         databaseHandler.openConnection();
         packetHandler.init();

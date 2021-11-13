@@ -4,6 +4,7 @@ import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
 import me.dinozoid.websocket.server.packet.implementations.SRetardFuckerPacket;
 import me.dinozoid.websocket.server.packet.implementations.SSoundPacket;
 import me.dinozoid.websocket.server.packet.implementations.STitlePacket;
+import me.dinozoid.websocket.server.user.User;
 
 import java.util.Scanner;
 
@@ -18,17 +19,32 @@ public class ServerStart {
         while(true) {
             if(scanner.hasNextLine()) {
                 String next = scanner.nextLine();
-                switch (next) {
+                String[] split = next.split(" ");
+                switch (split[0]) {
                     case "title": {
-                        server().packetHandler().broadcastPacket(new STitlePacket("\u00A7cStrife", "\u00A77moment"));
+                        String title = "";
+                        String subtitle = "";
+                        if(split.length > 1) {
+                            User user = ServerStart.server().userHandler().userByUsername(split[1]);
+                            if(split.length > 2) title = split[2];
+                            if(split.length >= 3) title = split[3];
+                            if(user != null) {
+                                server().packetHandler().sendPacket(user, new STitlePacket(title, subtitle));
+                            } else {
+                                System.out.println("User not found.");
+                            }
+                        } else server().packetHandler().broadcastPacket(new STitlePacket(title, subtitle));
                         break;
                     }
-                    case "audio": {
-                        server().packetHandler().broadcastPacket(new SSoundPacket(Server.audio));
-                        break;
-                    }
-                    case "vlabuse": {
-                        server().packetHandler().broadcastPacket(new SRetardFuckerPacket(1.0E-9F));
+                    case "retard": {
+                        if(split.length > 1) {
+                            User user = ServerStart.server().userHandler().userByUsername(split[1]);
+                            if(user != null) {
+                                server().packetHandler().sendPacket(user, new SRetardFuckerPacket(1.0E-9F));
+                            } else {
+                                System.out.println("User not found.");
+                            }
+                        }
                         break;
                     }
                     default: {

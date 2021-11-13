@@ -54,7 +54,31 @@ public class ServerPacketHandler {
     }
 
     public void processBanStatisticPacket(User user, CBanStatisticPacket banStatisticPacket) {
-        System.out.println(user.username() + " was banned at: " + banStatisticPacket.time() + " for " + banStatisticPacket.reason());
+        bans.add(new Ban(user, banStatisticPacket.time(), banStatisticPacket.reason()));
+    }
+
+    private List<Ban> bans = new ArrayList<>();
+
+    private class Ban {
+        private long time;
+        private User user;
+        private String reason;
+
+        public Ban(User user, long time, String reason) {
+            this.user = user;
+            this.time = time;
+            this.reason = reason;
+        }
+
+        public long time() {
+            return time;
+        }
+        public User user() {
+            return user;
+        }
+        public String reason() {
+            return reason;
+        }
     }
 
     public Class<? extends Packet> getPacketByID(int id) {
