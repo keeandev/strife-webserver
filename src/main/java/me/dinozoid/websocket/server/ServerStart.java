@@ -12,9 +12,20 @@ public class ServerStart {
 
     private static Server server;
 
+    private static Thread shutdownHook = new Thread(() -> {
+        try {
+            server().stop();
+            System.out.println("Server has been stopped.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    });
+
+
     public static void main(String[] args) {
         server = new Server(29154);
         server.start();
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
         Scanner scanner = new Scanner(System.in);
         while(true) {
             if(scanner.hasNextLine()) {
