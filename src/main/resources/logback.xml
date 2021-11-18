@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{[HH:mm:ss]} | %class{0} [%level]: %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="CHAT_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${user.dir}/logs/chat/chat.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${user.dir}/logs/chat/chat-%d.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{[HH:mm:ss]} | %class{0} [%level]: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="NETWORK_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${user.dir}/logs/network/network.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${user.dir}/logs/network/network-%d.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{[HH:mm:ss]} | %class{0} [%level]: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.mongodb.driver" level="OFF"/>
+
+    <logger name="Server" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="CHAT_LOGS" />
+    </logger>
+
+    <root level="TRACE" additivity="false">
+        <appender-ref ref="NETWORK_LOGS" />
+    </root>
+
+</configuration>

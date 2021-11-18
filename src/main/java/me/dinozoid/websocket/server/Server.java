@@ -4,11 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.dinozoid.websocket.server.database.DatabaseHandler;
 import me.dinozoid.websocket.server.packet.Packet;
-import me.dinozoid.websocket.server.packet.ServerPacketDeserializer;
 import me.dinozoid.websocket.server.packet.PacketEncoder;
+import me.dinozoid.websocket.server.packet.ServerPacketDeserializer;
 import me.dinozoid.websocket.server.packet.ServerPacketHandler;
 import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
-import me.dinozoid.websocket.server.packet.implementations.SSoundPacket;
 import me.dinozoid.websocket.server.packet.implementations.SUserConnectPacket;
 import me.dinozoid.websocket.server.user.User;
 import me.dinozoid.websocket.server.user.UserHandler;
@@ -20,13 +19,10 @@ import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.handshake.ServerHandshakeBuilder;
 import org.java_websocket.server.WebSocketServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
 
 public class Server extends WebSocketServer {
 
@@ -34,7 +30,9 @@ public class Server extends WebSocketServer {
     private DatabaseHandler databaseHandler = new DatabaseHandler();
     private UserHandler userHandler = new UserHandler();
 
-    public User serverUser;
+    public static Logger LOGGER = LoggerFactory.getLogger("Server");
+
+    private User serverUser;
     private Gson gson;
 
     public Server(int port) {
@@ -104,6 +102,9 @@ public class Server extends WebSocketServer {
         System.out.println("Server has been started.");
     }
 
+    public User serverUser() {
+        return serverUser;
+    }
     public Gson gson() {
         return gson;
     }

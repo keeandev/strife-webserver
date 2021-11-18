@@ -50,6 +50,7 @@ public class ServerPacketHandler {
     }
 
     public void processChatPacket(User user, CChatPacket chatPacket) {
+        Server.LOGGER.info(user.username() + ": " + chatPacket.message());
         server.packetHandler().broadcastPacket(new SChatPacket(user, chatPacket.message()));
     }
 
@@ -79,6 +80,10 @@ public class ServerPacketHandler {
         public String reason() {
             return reason;
         }
+    }
+
+    public List<Ban> bans() {
+        return bans;
     }
 
     public Class<? extends Packet> getPacketByID(int id) {

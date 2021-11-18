@@ -25,6 +25,11 @@ public class UserHandler {
         return userMap.values().stream().filter(user -> user.username().equals(username)).findFirst().orElse(null);
     }
 
+    public void disconnect(final User user) {
+        user.socket().close();
+        userMap.remove(user);
+    }
+
     public User userBySocket(final WebSocket socket) {
         return userMap.get(socket);
     }
