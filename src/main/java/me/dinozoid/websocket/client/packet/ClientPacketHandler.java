@@ -48,7 +48,6 @@ public class ClientPacketHandler {
         AudioDataStream audioStream = new AudioDataStream(audioData);
         AudioPlayer.player.start(audioStream);
     }
-
     public Class<? extends Packet> getPacketByID(int id) {
         return PACKETS.inverse().get(id);
     }

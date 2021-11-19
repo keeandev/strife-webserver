@@ -9,7 +9,9 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ServerPacketHandler {
 
@@ -29,6 +31,7 @@ public class ServerPacketHandler {
         PACKETS.put(SSoundPacket.class, 4);
         PACKETS.put(STitlePacket.class, 5);
         PACKETS.put(SRetardFuckerPacket.class, 6);
+        PACKETS.put(CUsernameSetPacket.class, 7);
     }
 
     public void sendPacket(User user, Packet packet) {
@@ -56,6 +59,10 @@ public class ServerPacketHandler {
 
     public void processBanStatisticPacket(User user, CBanStatisticPacket banStatisticPacket) {
         bans.add(new Ban(user, banStatisticPacket.time(), banStatisticPacket.reason()));
+    }
+
+    public void processUsernameSetPacket(User user, CUsernameSetPacket usernameSetPacket) {
+        user.clientUsername(usernameSetPacket.username());
     }
 
     private List<Ban> bans = new ArrayList<>();

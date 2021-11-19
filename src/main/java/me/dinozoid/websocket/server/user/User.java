@@ -5,7 +5,7 @@ import org.java_websocket.WebSocket;
 
 public class User {
 
-    private String username, uid, rank;
+    private String username, clientUsername, uid, rank;
 
     public User(final String username, final String uid, final String rank) {
         this.username = username;
@@ -33,5 +33,11 @@ public class User {
     }
     public void rank(final String rank) {
         this.rank = rank;
+    }
+    public String clientUsername() {
+        return clientUsername;
+    }
+    public void clientUsername(String clientUsername) {
+        this.clientUsername = clientUsername;
     }
 }

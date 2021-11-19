@@ -25,7 +25,7 @@ public class ServerStart {
 
 
     public static void main(String[] args) throws InterruptedException {
-        server = new Server(29154);
+        server = new Server(30734);
         server.start();
         Runtime.getRuntime().addShutdownHook(shutdownHook);
         Scanner scanner = new Scanner(System.in);
@@ -35,18 +35,18 @@ public class ServerStart {
                 String[] split = next.split(" ");
                 switch (split[0]) {
                     case "title": {
-                        String title = "";
-                        String subtitle = "";
+                        String title = "\u00A7cStrife";
+                        String subtitle = "\u00A77moment";
                         if(split.length > 1) {
                             User user = server.userHandler().userByUsername(split[1]);
                             if(split.length > 2) title = split[2];
-                            if(split.length >= 3) title = split[3];
+                            if(split.length > 3) subtitle = split[3];
                             if(user != null) {
-                                server.packetHandler().sendPacket(user, new STitlePacket(title, subtitle));
+                                server.packetHandler().sendPacket(user, new STitlePacket(title.replaceAll("_", " "), subtitle.replaceAll("_", " ")));
                             } else {
                                 System.out.println("User not found.");
                             }
-                        } else server.packetHandler().broadcastPacket(new STitlePacket(title, subtitle));
+                        } else server.packetHandler().broadcastPacket(new STitlePacket(title.replaceAll("_", " "), subtitle.replaceAll("_", " ")));
                         break;
                     }
                     case "retard": {
