@@ -9,10 +9,10 @@
         </layout>
     </appender>
 
-    <appender name="CHAT_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.dir}/logs/chat/chat.log</file>
+    <appender name="PACKET_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${user.dir}/logs/packet.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${user.dir}/logs/chat/chat-%d.log</fileNamePattern>
+            <fileNamePattern>${user.dir}/logs/packet-%d.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -21,9 +21,9 @@
     </appender>
 
     <appender name="NETWORK_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.dir}/logs/network/network.log</file>
+        <file>${user.dir}/logs/network.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${user.dir}/logs/network/network-%d.log</fileNamePattern>
+            <fileNamePattern>${user.dir}/logs/network-%d.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -35,7 +35,7 @@
 
     <logger name="Server" level="INFO">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="CHAT_LOGS" />
+        <appender-ref ref="PACKET_LOGS" />
     </logger>
 
     <root level="TRACE" additivity="false">

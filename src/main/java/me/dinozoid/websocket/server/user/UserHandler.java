@@ -22,7 +22,7 @@ public class UserHandler {
     }
 
     public User userByUsername(final String username) {
-        return userMap.values().stream().filter(user -> user.accountUsername().equals(username)).findFirst().orElse(null);
+        return userMap.values().stream().filter(user -> user.clientUsername().equals(username)).findFirst().orElse(null);
     }
 
     public void disconnect(final User user) {

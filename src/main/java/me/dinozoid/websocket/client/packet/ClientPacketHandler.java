@@ -7,6 +7,7 @@ import me.dinozoid.websocket.client.Client;
 import me.dinozoid.websocket.server.packet.Packet;
 import me.dinozoid.websocket.server.packet.PacketEncoder;
 import me.dinozoid.websocket.server.packet.implementations.*;
+import me.dinozoid.websocket.server.user.User;
 import sun.audio.AudioData;
 import sun.audio.AudioDataStream;
 import sun.audio.AudioPlayer;
@@ -49,6 +50,11 @@ public class ClientPacketHandler {
     public void processUserUpdatePacket(SUserUpdatePacket userUpdatePacket) {
         // TODO: update user
     }
+
+    public void processServerCommandPacket(SServerCommandPacket commandPacket) {
+        // TODO: proccess server commands
+    }
+
 
     public void processSendSoundPacket(SSoundPacket sendSoundPacket) {
         AudioData audioData = new AudioData(sendSoundPacket.bytes());

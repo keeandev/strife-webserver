@@ -25,7 +25,7 @@ public class ServerStart {
 
 
     public static void main(String[] args) throws InterruptedException {
-        server = new Server(30734);
+        server = new Server(29154);
         server.start();
         Runtime.getRuntime().addShutdownHook(shutdownHook);
         Scanner scanner = new Scanner(System.in);

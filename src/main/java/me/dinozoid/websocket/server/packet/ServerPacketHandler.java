@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import me.dinozoid.websocket.server.Server;
+import me.dinozoid.websocket.server.ServerStart;
 import me.dinozoid.websocket.server.packet.implementations.*;
 import me.dinozoid.websocket.server.user.User;
 import org.java_websocket.WebSocket;
@@ -33,6 +34,8 @@ public class ServerPacketHandler {
         PACKETS.put(SRetardFuckerPacket.class, 6);
         PACKETS.put(SUserUpdatePacket.class, 7);
         PACKETS.put(CUserUpdatePacket.class, 8);
+        PACKETS.put(CServerCommandPacket.class, 9);
+        PACKETS.put(SServerCommandPacket.class, 10);
     }
 
     public void sendPacket(User user, Packet packet) {
@@ -54,12 +57,34 @@ public class ServerPacketHandler {
     }
 
     public void processChatPacket(User user, CChatPacket chatPacket) {
-        Server.LOGGER.info(user.accountUsername() + ": " + chatPacket.message());
+        Server.LOGGER.info(user.clientUsername() + ": " + chatPacket.message());
         server.packetHandler().broadcastPacket(new SChatPacket(user, chatPacket.message()));
     }
 
     public void processBanStatisticPacket(User user, CBanStatisticPacket banStatisticPacket) {
         bans.add(new Ban(user, banStatisticPacket.time(), banStatisticPacket.reason()));
+    }
+
+    public void processServerCommandPacket(User user, CServerCommandPacket commandPacket) {
+        switch (commandPacket.operation()) {
+            case DISCONNECT_USER:
+            case UNMUTE_USER:
+            case MUTE_USER: {
+                switch (user.rank()) {
+                    case "Developer":
+                    case "Admin": {
+                        sendPacket(user, new SServerCommandPacket(commandPacket.operation(), "Operation successful."));
+                    }
+                }
+            }
+            case LIST_USERS: {
+                sendPacket(user, new SServerCommandPacket(commandPacket.operation(), "Operation successful."));
+                break;
+            }
+            case PACKET: {
+                Packet packet = (Packet) commandPacket.request();
+            }
+        }
     }
 
     public void processUserUpdatePacket(User user, CUserUpdatePacket userUpdatePacket) {
@@ -71,6 +96,7 @@ public class ServerPacketHandler {
                     switch (user.rank()) {
                         case "Developer": {
                             user.uid(value);
+                            sendPacket(user, new SUserUpdatePacket(new SUserUpdatePacket.Value(SUserUpdatePacket.UpdateType.UID, value)));
                             break;
                         }
                     }
@@ -81,6 +107,7 @@ public class ServerPacketHandler {
                         case "Developer":
                         case "Admin": {
                             user.clientUsername(value);
+                            sendPacket(user, new SUserUpdatePacket(new SUserUpdatePacket.Value(SUserUpdatePacket.UpdateType.CLIENT_USERNAME, value)));
                             break;
                         }
                     }
@@ -90,6 +117,7 @@ public class ServerPacketHandler {
                     switch (user.rank()) {
                         case "Developer": {
                             user.rank(value);
+                            sendPacket(user, new SUserUpdatePacket(new SUserUpdatePacket.Value(SUserUpdatePacket.UpdateType.RANK, value)));
                             break;
                         }
                     }
@@ -99,6 +127,7 @@ public class ServerPacketHandler {
                     switch (user.rank()) {
                         default: {
                             user.accountUsername(value);
+                            sendPacket(user, new SUserUpdatePacket(new SUserUpdatePacket.Value(SUserUpdatePacket.UpdateType.ACCOUNT_USERNAME, value)));
                             break;
                         }
                     }

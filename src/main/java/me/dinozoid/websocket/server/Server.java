@@ -7,9 +7,7 @@ import me.dinozoid.websocket.server.packet.Packet;
 import me.dinozoid.websocket.server.packet.PacketEncoder;
 import me.dinozoid.websocket.server.packet.ServerPacketDeserializer;
 import me.dinozoid.websocket.server.packet.ServerPacketHandler;
-import me.dinozoid.websocket.server.packet.implementations.SChatPacket;
-import me.dinozoid.websocket.server.packet.implementations.SUserConnectPacket;
-import me.dinozoid.websocket.server.packet.implementations.SUserUpdatePacket;
+import me.dinozoid.websocket.server.packet.implementations.*;
 import me.dinozoid.websocket.server.user.User;
 import me.dinozoid.websocket.server.user.UserHandler;
 import org.bson.Document;
@@ -67,15 +65,15 @@ public class Server extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         User user = userHandler.userBySocket(conn);
-        System.out.println(user.accountUsername() + " has been connected.");
+        System.out.println(user.clientUsername() + " has been connected.");
         packetHandler.sendPacket(user, new SUserConnectPacket(user));
-        packetHandler.sendPacket(user, new SChatPacket(serverUser, "Welcome, " + user.accountUsername() + "!"));
+        packetHandler.sendPacket(user, new SChatPacket(serverUser, "Welcome, " + user.clientUsername() + "!"));
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         User user = userHandler.userBySocket(conn);
-        System.out.println(user.accountUsername() + " has been disconnected. (" + reason + ")");
+        System.out.println(user.clientUsername() + " has been disconnected. (" + reason + ")");
         userHandler.removeUser(conn);
     }
 
@@ -84,6 +82,7 @@ public class Server extends WebSocketServer {
         User user = userHandler.userBySocket(conn);
         Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
         if(packet != null) {
+            System.out.println(packet);
             packet.process(user, packetHandler);
         }
     }
