@@ -2,6 +2,7 @@ package me.dinozoid.websocket.client.packet;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonElement;
 import me.dinozoid.websocket.client.Client;
 import me.dinozoid.websocket.server.packet.Packet;
 import me.dinozoid.websocket.server.packet.PacketEncoder;
@@ -9,6 +10,8 @@ import me.dinozoid.websocket.server.packet.implementations.*;
 import sun.audio.AudioData;
 import sun.audio.AudioDataStream;
 import sun.audio.AudioPlayer;
+
+import java.util.Map;
 
 public class ClientPacketHandler {
 
@@ -28,7 +31,7 @@ public class ClientPacketHandler {
     }
 
     public void processChatPacket(SChatPacket chatPacket) {
-        System.out.println("[" + chatPacket.user().username() + "] " + chatPacket.message());
+        System.out.println("[" + chatPacket.user().accountUsername() + "] " + chatPacket.message());
     }
 
     public void processVLAbusePacket(SRetardFuckerPacket abusePacket) {
@@ -40,7 +43,11 @@ public class ClientPacketHandler {
     }
 
     public void processUserConnectPacket(SUserConnectPacket userConnectPacket) {
+        // TODO: update user
+    }
 
+    public void processUserUpdatePacket(SUserUpdatePacket userUpdatePacket) {
+        // TODO: update user
     }
 
     public void processSendSoundPacket(SSoundPacket sendSoundPacket) {

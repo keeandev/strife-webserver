@@ -5,10 +5,10 @@ import org.java_websocket.WebSocket;
 
 public class User {
 
-    private String username, clientUsername, uid, rank;
+    private String accountUsername, clientUsername, uid, rank;
 
-    public User(final String username, final String uid, final String rank) {
-        this.username = username;
+    public User(final String accountUsername, final String uid, final String rank) {
+        this.accountUsername = accountUsername;
         this.uid = uid;
         this.rank = rank;
     }
@@ -16,11 +16,11 @@ public class User {
     public WebSocket socket() {
         return ServerStart.server().userHandler().socket(this);
     }
-    public String username() {
-        return username;
+    public String accountUsername() {
+        return accountUsername;
     }
-    public void username(final String username) {
-        this.username = username;
+    public void accountUsername(final String username) {
+        this.accountUsername = username;
     }
     public String uid() {
         return uid;

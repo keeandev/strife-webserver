@@ -2,6 +2,7 @@ package me.dinozoid.websocket.server.packet;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonElement;
 import me.dinozoid.websocket.server.Server;
 import me.dinozoid.websocket.server.packet.implementations.*;
 import me.dinozoid.websocket.server.user.User;
@@ -9,9 +10,8 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class ServerPacketHandler {
 
@@ -31,7 +31,8 @@ public class ServerPacketHandler {
         PACKETS.put(SSoundPacket.class, 4);
         PACKETS.put(STitlePacket.class, 5);
         PACKETS.put(SRetardFuckerPacket.class, 6);
-        PACKETS.put(CUsernameSetPacket.class, 7);
+        PACKETS.put(SUserUpdatePacket.class, 7);
+        PACKETS.put(CUserUpdatePacket.class, 8);
     }
 
     public void sendPacket(User user, Packet packet) {
@@ -53,7 +54,7 @@ public class ServerPacketHandler {
     }
 
     public void processChatPacket(User user, CChatPacket chatPacket) {
-        Server.LOGGER.info(user.username() + ": " + chatPacket.message());
+        Server.LOGGER.info(user.accountUsername() + ": " + chatPacket.message());
         server.packetHandler().broadcastPacket(new SChatPacket(user, chatPacket.message()));
     }
 
@@ -61,8 +62,50 @@ public class ServerPacketHandler {
         bans.add(new Ban(user, banStatisticPacket.time(), banStatisticPacket.reason()));
     }
 
-    public void processUsernameSetPacket(User user, CUsernameSetPacket usernameSetPacket) {
-        user.clientUsername(usernameSetPacket.username());
+    public void processUserUpdatePacket(User user, CUserUpdatePacket userUpdatePacket) {
+        for (Map.Entry<String, JsonElement> entry : userUpdatePacket.values().entrySet()) {
+            SUserUpdatePacket.UpdateType type = SUserUpdatePacket.UpdateType.valueOf(entry.getKey());
+            String value = String.valueOf(entry.getValue());
+            switch (type) {
+                case UID: {
+                    switch (user.rank()) {
+                        case "Developer": {
+                            user.uid(value);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case CLIENT_USERNAME: {
+                    switch (user.rank()) {
+                        case "Developer":
+                        case "Admin": {
+                            user.clientUsername(value);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case RANK: {
+                    switch (user.rank()) {
+                        case "Developer": {
+                            user.rank(value);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case ACCOUNT_USERNAME: {
+                    switch (user.rank()) {
+                        default: {
+                            user.accountUsername(value);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     private List<Ban> bans = new ArrayList<>();
