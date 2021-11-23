@@ -14,9 +14,10 @@ public class CServerCommandPacket extends Packet {
         MUTE_USER, UNMUTE_USER, DISCONNECT_USER, LIST_USERS, PACKET
     }
 
-    public CServerCommandPacket(final CommandOperation commandOperation, Object request) {
+    public CServerCommandPacket(final CommandOperation commandOperation, Object request, String tag) {
         super(ServerStart.server().packetHandler().getIDForPacket(CServerCommandPacket.class));
         data.addProperty("operation", String.valueOf(commandOperation));
+        data.addProperty("tag", tag);
         switch (commandOperation) {
             case LIST_USERS:
             case DISCONNECT_USER:
@@ -53,6 +54,9 @@ public class CServerCommandPacket extends Packet {
         }
     }
 
+    public String tag() {
+        return data.get("tag").getAsString();
+    }
     public CommandOperation operation() {
         return CommandOperation.valueOf(data.get("operation").getAsString());
     }

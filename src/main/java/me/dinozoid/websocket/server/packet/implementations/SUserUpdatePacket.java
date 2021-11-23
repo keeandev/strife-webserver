@@ -35,9 +35,8 @@ public class SUserUpdatePacket extends Packet {
     public SUserUpdatePacket(Value... values) {
         super(ServerStart.server().packetHandler().getIDForPacket(SUserUpdatePacket.class));
         JsonObject object = new JsonObject();
-        Arrays.stream(values).forEach(value -> object.addProperty(String.valueOf(value.type), (String)value.value));
+        Arrays.stream(values).forEach(value -> object.addProperty(String.valueOf(value.type), String.valueOf(value.value)));
         data.add("values", object);
-        System.out.println(data);
     }
 
     @Override

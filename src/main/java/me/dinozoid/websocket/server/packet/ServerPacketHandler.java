@@ -73,12 +73,12 @@ public class ServerPacketHandler {
                 switch (user.rank()) {
                     case "Developer":
                     case "Admin": {
-                        sendPacket(user, new SServerCommandPacket(commandPacket.operation(), "Operation successful."));
+                        sendPacket(user, new SServerCommandPacket(commandPacket.operation(), "Operation successful.", commandPacket.tag()));
                     }
                 }
             }
             case LIST_USERS: {
-                sendPacket(user, new SServerCommandPacket(commandPacket.operation(), "Operation successful."));
+                sendPacket(user, new SServerCommandPacket(commandPacket.operation(), "Operation successful.", commandPacket.tag()));
                 break;
             }
             case PACKET: {
@@ -90,7 +90,7 @@ public class ServerPacketHandler {
     public void processUserUpdatePacket(User user, CUserUpdatePacket userUpdatePacket) {
         for (Map.Entry<String, JsonElement> entry : userUpdatePacket.values().entrySet()) {
             SUserUpdatePacket.UpdateType type = SUserUpdatePacket.UpdateType.valueOf(entry.getKey());
-            String value = String.valueOf(entry.getValue());
+            String value = entry.getValue().getAsString();
             switch (type) {
                 case UID: {
                     switch (user.rank()) {

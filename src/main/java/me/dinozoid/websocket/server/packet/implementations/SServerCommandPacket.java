@@ -1,7 +1,7 @@
 package me.dinozoid.websocket.server.packet.implementations;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import me.dinozoid.websocket.client.packet.ClientPacketHandler;
 import me.dinozoid.websocket.server.ServerStart;
 import me.dinozoid.websocket.server.packet.Packet;
@@ -11,21 +11,23 @@ import me.dinozoid.websocket.server.user.User;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 
 public class SServerCommandPacket extends Packet {
 
-    public SServerCommandPacket(final CServerCommandPacket.CommandOperation commandOperation, Object response) {
+    public SServerCommandPacket(final CServerCommandPacket.CommandOperation commandOperation, Object response, String tag) {
         super(ServerStart.server().packetHandler().getIDForPacket(SServerCommandPacket.class));
         data.addProperty("operation", String.valueOf(commandOperation));
+        data.addProperty("tag", tag);
         switch (commandOperation) {
             case PACKET: {
                 data.addProperty("response", Base64.getEncoder().encodeToString(ServerStart.server().gson().toJson(response, Packet.class).getBytes()));
+                break;
             }
             case LIST_USERS: {
-                JsonObject client = new JsonObject();
-                ServerStart.server().userHandler().userMap().values().forEach(user -> client.addProperty("user", ServerStart.server().gson().toJson(user, User.class)));
+                JsonArray client = new JsonArray();
+                ServerStart.server().userHandler().userMap().values().forEach(user -> client.add(ServerStart.server().gson().toJson(user, User.class)));
                 data.add("response", client);
+                break;
             }
             default: {
                 data.addProperty("response", (String)response);
@@ -50,8 +52,8 @@ public class SServerCommandPacket extends Packet {
             }
             case LIST_USERS: {
                 List<User> clientUsers = new ArrayList<>();
-                for (Map.Entry<String, JsonElement> entry : data.get("response").getAsJsonObject().entrySet()) {
-                    clientUsers.add(ServerStart.server().gson().fromJson(entry.getValue(), User.class));
+                for (JsonElement user : data.get("response").getAsJsonArray()) {
+                    clientUsers.add(ServerStart.server().gson().fromJson(user.getAsString(), User.class));
                 }
                 return clientUsers;
             }
@@ -61,6 +63,9 @@ public class SServerCommandPacket extends Packet {
         }
     }
 
+    public String tag() {
+        return data.get("tag").getAsString();
+    }
     public CServerCommandPacket.CommandOperation operation() {
         return CServerCommandPacket.CommandOperation.valueOf(data.get("operation").getAsString());
     }

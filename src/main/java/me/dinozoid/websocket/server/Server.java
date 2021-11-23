@@ -36,6 +36,9 @@ public class Server extends WebSocketServer {
 
     public Server(int port) {
         super(new InetSocketAddress(port));
+        setTcpNoDelay(true);
+        setConnectionLostTimeout(30);
+        setMaxPendingConnections(8);
     }
 
     @Override
