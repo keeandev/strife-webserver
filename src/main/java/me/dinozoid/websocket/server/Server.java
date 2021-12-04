@@ -66,6 +66,12 @@ public class Server extends WebSocketServer {
     }
 
     @Override
+    public void onWebsocketClosing(WebSocket conn, int code, String reason, boolean remote) {
+        super.onWebsocketClosing(conn, code, reason, remote);
+        userHandler.removeUser(conn);
+    }
+
+    @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         User user = userHandler.userBySocket(conn);
         System.out.println(user.clientUsername() + " has been connected.");
@@ -98,7 +104,7 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onStart() {
-        userHandler.addUser(null, serverUser = new User("Server", "-9999", "Developer"));
+        userHandler.addUser(null, serverUser = new User("StrifeServer", "-9999", "Developer"));
         databaseHandler.openConnection();
         packetHandler.init();
         gson = new GsonBuilder().registerTypeAdapter(Packet.class, new ServerPacketDeserializer<Packet>(packetHandler)).create();
