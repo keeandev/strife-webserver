@@ -37,13 +37,13 @@ public class Server extends WebSocketServer {
     public Server(int port) {
         super(new InetSocketAddress(port));
         setTcpNoDelay(true);
-        setConnectionLostTimeout(30);
         setMaxPendingConnections(8);
     }
 
     @Override
     public ServerHandshakeBuilder onWebsocketHandshakeReceivedAsServer(WebSocket conn, Draft draft, ClientHandshake request) throws InvalidDataException {
         ServerHandshakeBuilder builder = super.onWebsocketHandshakeReceivedAsServer(conn, draft, request);
+        System.out.println("attempt");
         if(userHandler.userMap().containsKey(conn)) {
             throw new InvalidDataException(CloseFrame.POLICY_VALIDATION, "Not accepted!");
         }
@@ -91,8 +91,8 @@ public class Server extends WebSocketServer {
         User user = userHandler.userBySocket(conn);
         Packet packet = gson.fromJson(PacketEncoder.decode(message), Packet.class);
         if(packet != null) {
-            System.out.println(packet);
-            packet.process(user, packetHandler);
+            if(packet.length() < 500 && packet.propertyLength() < 50)
+                packet.process(user, packetHandler);
         }
     }
 

@@ -25,7 +25,7 @@ public class ServerStart {
 
 
     public static void main(String[] args) throws InterruptedException {
-        server = new Server(29154);
+        server = new Server(29155);
         server.start();
         Runtime.getRuntime().addShutdownHook(shutdownHook);
         Scanner scanner = new Scanner(System.in);
@@ -75,7 +75,15 @@ public class ServerStart {
                         if(split.length > 1) {
                             User user = server.userHandler().userByUsername(split[1]);
                             if(user != null) {
-                                server.userHandler().disconnect(user);
+                                user.socket().closeConnection(-1, "kicked");
+                            } else System.out.println("User not found on server.");
+                        }
+                    }
+                    case "message": {
+                        if(split.length > 1) {
+                            User user = server.userHandler().userByUsername(split[1]);
+                            if(user != null) {
+                                server.packetHandler().sendPacket(user, new SChatPacket(server.serverUser(), next));
                             } else System.out.println("User not found on server.");
                         }
                     }
