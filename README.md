@@ -1,4 +1,4 @@
-# Strife Client Webserver
+# Strife Client Webserver (2021)
 
 A custom websocket server with packet parsing for both client and server. This server has functionality to send sound and various other packets to any active client.
 
